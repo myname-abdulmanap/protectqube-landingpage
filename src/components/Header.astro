@@ -23,32 +23,31 @@ import ThemeToggle from './ThemeToggle.astro';
   .nav-container {
     max-width: 100%;
     margin: 0 auto;
-    padding: 1.25rem;
+    padding: 1.25rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
+  /* ==== LOGO ==== */
   .logo a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    height: auto;
     position: relative;
-    display: inline-block;
-    width: 200px;
-    height: 50px;
-    overflow: visible;
   }
 
   .logo-img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 80px;
-    height: 20px;
-    transform: translate(-50%, -50%);
-    transition: opacity 0.3s ease;
-    pointer-events: none;
+    display: block;
+    max-width: 230px;
+    height: auto;
+    transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
   .logo-white {
+    position: absolute;
     opacity: 0;
   }
 
@@ -60,6 +59,7 @@ import ThemeToggle from './ThemeToggle.astro';
     opacity: 0;
   }
 
+  /* ==== MENU ==== */
   .menu {
     display: flex;
     align-items: center;
@@ -77,14 +77,13 @@ import ThemeToggle from './ThemeToggle.astro';
   .menu a {
     text-decoration: none;
     color: var(--text-color);
-    font-weight: bold;
+    font-weight: 600;
     transition: all 0.3s ease;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     position: relative;
     padding: 0.5rem 0;
   }
 
-  /* Menu hover effects - subtle with underline */
   .menu a:not(.try-button):hover {
     color: var(--primary-color);
     transform: translateY(-1px);
@@ -113,7 +112,7 @@ import ThemeToggle from './ThemeToggle.astro';
     color: var(--primary-color);
   }
 
-  /* Try QIFESS Button - Updated with CSS Variables */
+  /* ==== BUTTON ==== */
   .try-button {
     background: var(--bg-color);
     color: var(--primary-color);
@@ -127,86 +126,52 @@ import ThemeToggle from './ThemeToggle.astro';
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    display: inline-block;
     white-space: nowrap;
     box-shadow: var(--shadow-sm);
   }
 
-  /* Mobile Try Button - hidden on desktop */
   .mobile-try-button {
     display: none;
   }
 
-  .try-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, var(--primary-light), transparent);
-    transition: left 0.5s;
-  }
-
-  .try-button:hover::before {
-    left: 100%;
-  }
-
   .try-button:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
     background: var(--primary-color);
     color: var(--bg-color);
-    border-color: var(--primary-color);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
   }
 
-  .try-button:active {
-    transform: translateY(0);
-  }
-
-  /* Transparent header button styling */
   header.transparent .try-button {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-color);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    backdrop-filter: blur(8px);
   }
 
   header.transparent .try-button:hover {
-    background: var(--bg-color);
-    color: var(--primary-color);
-    border-color: var(--bg-color);
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
   }
 
+  /* ==== ICONS ==== */
   .navbar-icons {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
 
-  .navbar-icons .icon {
-    margin-left: 20px;
-    font-size: medium;
-    background-color: var(--bg-color);
-    padding: 2px;
-    border-radius: 10px;
-  }
-
   .bar {
     display: block;
-    width: 27px;
-    height: 6px;
-    margin: 3px;
+    width: 26px;
+    height: 3px;
+    margin: 5px 0;
     background-color: var(--text-bar);
     transition: 0.3s;
   }
 
-  header.white .bar {
-    background-color: var(--text-bar);
-  }
-
   header.transparent .bar {
-    background-color: white;
+    background-color: #fff;
   }
 
   .hamburger {
@@ -215,10 +180,10 @@ import ThemeToggle from './ThemeToggle.astro';
     border: none;
     cursor: pointer;
     z-index: 1001;
-    padding: 15px;
+    padding: 10px;
   }
 
-  /* Overlay for mobile menu */
+  /* ==== OVERLAY ==== */
   .overlay {
     display: none;
     position: fixed;
@@ -234,12 +199,12 @@ import ThemeToggle from './ThemeToggle.astro';
     display: block;
   }
 
-  /* Dropdown styling */
+  /* ==== DROPDOWN ==== */
   .has-dropdown {
     position: relative;
   }
 
-  .has-dropdown .dropdown {
+  .dropdown {
     position: absolute;
     top: 100%;
     left: 0;
@@ -247,17 +212,9 @@ import ThemeToggle from './ThemeToggle.astro';
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     min-width: 200px;
-    padding: 0;
-    z-index: 999;
     opacity: 0;
     visibility: hidden;
     transform: translateY(10px);
-    transition:
-      opacity 0.3s ease,
-      transform 0.3s ease,
-      visibility 0.3s;
-    overflow: hidden;
-    max-height: 0;
     transition: all 0.3s ease;
   }
 
@@ -265,47 +222,26 @@ import ThemeToggle from './ThemeToggle.astro';
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
-    max-height: 200px;
-    padding: 0.5rem 0;
-  }
-
-  .dropdown li {
-    margin: 0;
-    padding: 0;
   }
 
   .dropdown a {
     padding: 0.75rem 1.5rem;
     display: block;
     color: var(--text-color);
-    font-weight: normal;
     font-size: 1rem;
-    transition: background 0.2s;
-    white-space: nowrap;
   }
 
   .dropdown a:hover {
     background-color: rgba(0, 0, 0, 0.05);
   }
 
-  .dropdown-toggle {
-    display: flex;
-    align-items: center;
+  /* ==== RESPONSIVE ==== */
+  @media (max-width: 1024px) {
+    .logo-img {
+      max-width: 180px;
+    }
   }
 
-  .dropdown-toggle::after {
-    content: '▼';
-    display: inline-block;
-    margin-left: 6px;
-    font-size: 0.7em;
-    transition: transform 0.3s ease;
-  }
-
-  .has-dropdown.open .dropdown-toggle::after {
-    transform: rotate(180deg);
-  }
-
-  /* Mobile Styles */
   @media (max-width: 768px) {
     .hamburger {
       display: block;
@@ -316,16 +252,12 @@ import ThemeToggle from './ThemeToggle.astro';
       top: 0;
       left: -280px;
       height: 100vh;
-      width: 280px;
+      width: 260px;
       background: var(--bg-color);
       padding: 2rem;
       transition: left 0.3s ease;
       z-index: 1000;
       overflow-y: auto;
-    }
-
-    header.transparent .menu a {
-      color: var(--text-color);
     }
 
     .menu.active {
@@ -339,100 +271,33 @@ import ThemeToggle from './ThemeToggle.astro';
       width: 100%;
     }
 
-    .menu ul li {
-      width: 100%;
-    }
-
-    /* Mobile menu structure */
-    .menu {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-
-    /* Mobile menu item hover effects */
-    .menu a:not(.try-button) {
-      padding: 0.75rem 0;
-      width: 100%;
-      display: block;
-    }
-
-    .menu a:not(.try-button):hover {
-      color: var(--primary-color);
-      transform: translateX(3px);
-    }
-
-    .menu a:not(.try-button)::after {
-      bottom: 0.5rem;
-    }
-
-    .hamburger.active .bar:nth-child(1) {
-      transform: rotate(-45deg) translate(-5px, 6px);
-    }
-
-    .hamburger.active .bar:nth-child(2) {
-      opacity: 0;
-    }
-
-    .hamburger.active .bar:nth-child(3) {
-      transform: rotate(45deg) translate(-5px, -6px);
-    }
-
-    /* Mobile Try Button - Add actual clickable element */
-
-    /* Mobile dropdown styles */
-    .has-dropdown .dropdown {
-      position: static;
-      box-shadow: none;
-      border-radius: 0;
-      background: transparent;
-      padding-left: 1rem;
-      max-height: 0;
-      overflow: hidden;
-    }
-
-    .has-dropdown.open .dropdown {
-      max-height: 500px;
-    }
-
-    .dropdown a {
-      padding: 0.5rem 0;
-    }
-
-    .dropdown a:hover {
-      color: var(--primary-color);
-      transform: translateX(3px);
-    }
-
-    .navbar-icons {
-      gap: 0.5rem;
-    }
-
-    .nav-container {
-      padding: 1rem;
-    }
-  }
-
-  /* Extra small mobile devices */
-  @media (max-width: 480px) {
-    .nav-container {
-      padding: 0.75rem;
-    }
-
     .try-button {
-      /* padding: 0.7rem 1.25rem;
-      font-size: 0.9rem; */
       display: none;
     }
 
-    .logo a {
-      width: 150px;
-      height: 40px;
+    .mobile-try-button {
+      display: block;
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: 20px;
+      background: var(--primary-color);
+      color: white;
+      font-weight: 600;
+      text-align: center;
     }
 
     .logo-img {
-      width: 60px;
-      height: 15px;
+      max-width: 160px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .nav-container {
+      padding: 0.75rem 1rem;
+    }
+
+    .logo-img {
+      max-width: 130px;
     }
   }
 </style>
@@ -446,18 +311,19 @@ import ThemeToggle from './ThemeToggle.astro';
           class="logo-img logo-dark"
           src="/assets/img/logo-protectcube.png"
           alt="Logo"
-          width="50"
-          height="50"
+          width="150"
+          height="150"
         />
         <img
           class="logo-img logo-white"
           src="/assets/img/logo-protectcube.png"
           alt="Logo"
-          width="50"
-          height="50"
+          width="150"
+          height="150"
         />
       </a>
     </div>
+
     <nav class="menu">
       <ul>
         <li><a href="/#">Home</a></li>
@@ -466,7 +332,6 @@ import ThemeToggle from './ThemeToggle.astro';
         <li><a href="/products">Products</a></li>
         <li><a href="/contact">Contact Us</a></li>
       </ul>
-      <!-- Mobile Try Button - only visible on mobile -->
       <a href="/contact" class="mobile-try-button">Try for Free</a>
     </nav>
 

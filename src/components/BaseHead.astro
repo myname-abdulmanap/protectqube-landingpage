@@ -17,7 +17,7 @@ const { title, description, image = '/assets/img/banner.jpg' } = Astro.props;
 
 <!-- Global Metadata -->
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="https://app.protectqube.com/favicon.ico" />
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link
@@ -28,16 +28,6 @@ const { title, description, image = '/assets/img/banner.jpg' } = Astro.props;
 />
 <meta name="generator" content={Astro.generator} />
 
-<!-- Font preloads -->
-<link rel="preload" href="/fonts/atkinson-regular.woff" as="font" type="font/woff" crossorigin />
-<link rel="preload" href="/fonts/atkinson-bold.woff" as="font" type="font/woff" crossorigin />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-  href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Quicksand:wght@300..700&display=swap"
-  rel="stylesheet"
-/>
-
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
 
@@ -45,6 +35,10 @@ const { title, description, image = '/assets/img/banner.jpg' } = Astro.props;
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
+
+<!-- Google Site Verification -->
+<meta name="google-site-verification" content="wro6A9GYVm9q0IENE23-M_SqnXQ2QUZRyUzEL5p68CI" />
+<meta name="google-site-verification" content="9E-93iEiuWJ7YYfHCW2rvTynuU8oRlRXSzE5AN4t0fU" />
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
@@ -65,7 +59,26 @@ const { title, description, image = '/assets/img/banner.jpg' } = Astro.props;
 <link rel="alternate" href="https://protectcube.com" hreflang="id-ID" />
 <meta name="geo.region" content="ID" />
 <meta name="geo.placename" content="Indonesia" />
+
+<!-- Font Preloads & Google Fonts -->
+<link rel="preload" href="/fonts/atkinson-regular.woff" as="font" type="font/woff" crossorigin />
+<link rel="preload" href="/fonts/atkinson-bold.woff" as="font" type="font/woff" crossorigin />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Quicksand:wght@300..700&display=swap"
+  rel="stylesheet"
+/>
+
+<!-- External Scripts & Analytics -->
 <script
   src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs"
   type="module"></script>
-<script defer data-domain="protectqube.com" src="https://plausible.io/js/script.js"></script>
+
+<!-- Plausible Analytics -->
+<script defer data-domain="protectqube.com" src="https://analytics.qualita-indonesia.web.id/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js"></script>
+<script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
+
+<!-- Umami Analytics -->
+<script defer src="https://umami.qifess.id/script.js" data-website-id="b735828e-01c4-4759-a0ab-53e1a0d0986f"></script>
+

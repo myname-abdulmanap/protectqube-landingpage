@@ -4,9 +4,11 @@
 
 <section class="contact" id="contact">
   <div class="contact-container">
+    <br />
+    <br />
     <div class="section-title fade-in">
       <h2>Contact Us</h2>
-      <p>Interested protectQube?</p>
+      <p>Interested in protectQube? Have questions? We'd love to hear from you.</p>
       <p>contact@qualita-indonesia.com</p>
     </div>
 
@@ -14,8 +16,15 @@
       <div class="form-grid">
         <div class="form-group">
           <label for="name">Name</label>
-          <input type="text" id="name" name="user_name" placeholder="enter your name" required />
+          <input
+            type="text"
+            id="name"
+            name="user_name"
+            placeholder="enter your name"
+            required
+          />
         </div>
+
         <div class="form-group">
           <label for="email">Email</label>
           <input
@@ -26,213 +35,478 @@
             required
           />
         </div>
+
+        <div class="form-group">
+          <label for="phone">No Telp/Mobile</label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            placeholder="enter your telephone number"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="company">Company</label>
+          <input
+            type="text"
+            id="company"
+            name="company"
+            placeholder="enter your company"
+          />
+        </div>
       </div>
+
       <div class="form-group">
-        <label for="subject">Subject</label>
-        <input type="text" id="subject" name="subject" placeholder="enter subject" />
+        <label for="subject">Subject / Interested</label>
+        <select id="subject" required>
+          <option value="">-- Please select --</option>
+          <option value="Partnership & Collaboration"
+            >Partnership / Collaboration</option
+          >
+          <option value="Career & Recruitment">Career / Recruitment</option>
+          <option value="Other">Other</option>
+        </select>
       </div>
+
+      <div class="form-group hidden" id="other-subject-wrapper">
+        <label for="other_subject">Please specify</label>
+        <input
+          type="text"
+          id="other_subject"
+          placeholder="Please specify your subject"
+        />
+      </div>
+
+      <!-- Hidden input for final subject value that will be sent to EmailJS -->
+      <input type="hidden" name="subject" id="subject_value" />
+
       <div class="form-group">
         <label for="message">Message</label>
         <textarea id="message" name="message" required></textarea>
       </div>
 
+      <!-- reCAPTCHA -->
       <div class="form-group">
-        <div class="form-group">
-          <div class="g-recaptcha" data-sitekey="6LcSPkYrAAAAAA3TN5ptXfbY_nsfOOCCPXjMMESG"></div>
+        <div
+          class="g-recaptcha"
+          data-sitekey="6LcSPkYrAAAAAA3TN5ptXfbY_nsfOOCCPXjMMESG"
+        >
         </div>
       </div>
-      <button type="submit" class="btn" id="submit-btn">Send Message</button>
+      <p class="captcha-warning">
+        * Jika captcha tidak muncul, silakan refresh halaman terlebih dahulu.
+      </p>
 
+      <!-- Honeypot (anti-bot) -->
+      <input
+        type="text"
+        name="website"
+        autocomplete="off"
+        tabindex="-1"
+        class="hidden"
+      />
+
+      <!-- Hidden metadata - Enhanced Version -->
+      <input type="hidden" name="ip" />
+      <input type="hidden" name="user_agent" />
+      <input type="hidden" name="language" />
+      <input type="hidden" name="timezone" />
+      <input type="hidden" name="screen" />
+      <input type="hidden" name="platform" />
+      <input type="hidden" name="page_url" />
+      <input type="hidden" name="referrer" />
+      <input type="hidden" name="submitted_at" />
+
+      <!-- New Enhanced Metadata -->
+      <input type="hidden" name="browser_name" />
+      <input type="hidden" name="cpu_cores" />
+      <input type="hidden" name="device_memory" />
+      <input type="hidden" name="connection_type" />
+      <input type="hidden" name="connection_speed" />
+      <input type="hidden" name="touch_support" />
+      <input type="hidden" name="color_depth" />
+      <input type="hidden" name="pixel_ratio" />
+      <input type="hidden" name="orientation" />
+      <input type="hidden" name="dark_mode" />
+      <input type="hidden" name="cookies_enabled" />
+      <input type="hidden" name="do_not_track" />
+      <input type="hidden" name="viewport_size" />
+      <input type="hidden" name="time_on_page" />
+
+      <!-- Location Data (from IP) -->
+      <input type="hidden" name="country" />
+      <input type="hidden" name="city" />
+      <input type="hidden" name="region" />
+      <input type="hidden" name="isp" />
+
+      <button type="submit" class="btn" id="submit-btn">Send Message</button>
       <div class="status" id="status"></div>
     </form>
   </div>
 </section>
 
-<!-- EmailJS Script -->
+<!-- EmailJS & reCAPTCHA -->
 <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <script>
-  // Tunggu hingga EmailJS loaded dan DOM ready
-  document.addEventListener('DOMContentLoaded', function () {
-    emailjs.init('4-iOyCns2viav_IW_');
+  // Track time on page
+  const pageLoadTime = Date.now();
 
-    const form = document.getElementById('contact-form');
-    const submitBtn = document.getElementById('submit-btn');
-    const status = document.getElementById('status');
+  // Tunggu hingga EmailJS loaded dan DOM ready
+  document.addEventListener("DOMContentLoaded", function () {
+    // Inisialisasi EmailJS (public key)
+    emailjs.init("4-iOyCns2viav_IW_");
+
+    const form = document.getElementById("contact-form");
+    const submitBtn = document.getElementById("submit-btn");
+    const status = document.getElementById("status");
+    const subjectSelect = document.getElementById("subject");
+    const subjectValueInput = document.getElementById("subject_value");
+    const otherSubjectWrapper = document.getElementById(
+      "other-subject-wrapper",
+    );
+    const otherSubjectInput = document.getElementById("other_subject");
 
     if (!form || !submitBtn || !status) {
-      console.error('Form elements tidak ditemukan');
       return;
     }
+
+    // Show/hide "Other" input field based on subject selection
+    subjectSelect.addEventListener("change", function () {
+      if (this.value === "Other") {
+        otherSubjectWrapper.classList.remove("hidden");
+        otherSubjectInput.required = true;
+      } else {
+        otherSubjectWrapper.classList.add("hidden");
+        otherSubjectInput.required = false;
+        otherSubjectInput.value = "";
+      }
+    });
 
     function showStatus(message, type) {
       status.textContent = message;
       status.className = `status ${type}`;
-      status.style.display = 'block';
-
-      setTimeout(() => {
-        status.style.display = 'none';
-      }, 5000);
+      status.style.display = "block";
+      setTimeout(() => (status.style.display = "none"), 5000);
     }
 
-    // Function untuk mengatur loading state
     function setLoading(isLoading) {
       if (isLoading) {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="loading"></span>Sending...';
       } else {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = 'Send Message';
+        submitBtn.innerHTML = "Send Message";
       }
     }
 
-    // Event listener untuk form submit
-    form.addEventListener('submit', function (e) {
+    // Detect browser name from user agent
+    function getBrowserName() {
+      const ua = navigator.userAgent;
+      if (ua.includes("Firefox/")) return "Firefox";
+      if (ua.includes("Edg/")) return "Edge";
+      if (ua.includes("Chrome/") && !ua.includes("Edg/")) return "Chrome";
+      if (ua.includes("Safari/") && !ua.includes("Chrome/")) return "Safari";
+      if (ua.includes("Opera/") || ua.includes("OPR/")) return "Opera";
+      return "Unknown";
+    }
+
+    // Ambil metadata browser & isi ke hidden inputs - ENHANCED VERSION
+    function populateMetadataFields() {
+      // Basic metadata
+      form.querySelector('input[name="user_agent"]').value =
+        navigator.userAgent || "-";
+      form.querySelector('input[name="language"]').value =
+        (navigator.languages && navigator.languages.join(", ")) ||
+        navigator.language ||
+        "-";
+      form.querySelector('input[name="timezone"]').value =
+        Intl.DateTimeFormat().resolvedOptions().timeZone || "-";
+      form.querySelector('input[name="screen"]').value =
+        window.screen.width +
+        "x" +
+        window.screen.height +
+        "@" +
+        (window.devicePixelRatio || 1);
+      form.querySelector('input[name="platform"]').value =
+        (navigator.userAgentData && navigator.userAgentData.platform) ||
+        navigator.platform ||
+        "-";
+      form.querySelector('input[name="page_url"]').value = window.location.href;
+      form.querySelector('input[name="referrer"]').value =
+        document.referrer || "-";
+      form.querySelector('input[name="submitted_at"]').value =
+        new Date().toISOString();
+
+      // NEW ENHANCED METADATA
+      // Browser info
+      form.querySelector('input[name="browser_name"]').value = getBrowserName();
+
+      // Hardware capabilities
+      form.querySelector('input[name="cpu_cores"]').value =
+        navigator.hardwareConcurrency || "unknown";
+      form.querySelector('input[name="device_memory"]').value =
+        navigator.deviceMemory ? `${navigator.deviceMemory} GB` : "unknown";
+
+      // Network info
+      const conn =
+        navigator.connection ||
+        navigator.mozConnection ||
+        navigator.webkitConnection;
+      form.querySelector('input[name="connection_type"]').value =
+        conn?.effectiveType || "unknown";
+      form.querySelector('input[name="connection_speed"]').value =
+        conn?.downlink ? `${conn.downlink} Mbps` : "unknown";
+
+      // Device capabilities
+      form.querySelector('input[name="touch_support"]').value =
+        navigator.maxTouchPoints > 0 ? "Yes" : "No";
+      form.querySelector('input[name="color_depth"]').value =
+        `${screen.colorDepth}-bit`;
+      form.querySelector('input[name="pixel_ratio"]').value =
+        window.devicePixelRatio || 1;
+      form.querySelector('input[name="orientation"]').value =
+        screen.orientation?.type ||
+        (window.innerHeight > window.innerWidth ? "portrait" : "landscape");
+
+      // Browser preferences
+      form.querySelector('input[name="dark_mode"]').value = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+      ).matches
+        ? "Yes"
+        : "No";
+      form.querySelector('input[name="cookies_enabled"]').value =
+        navigator.cookieEnabled ? "Yes" : "No";
+      form.querySelector('input[name="do_not_track"]').value =
+        navigator.doNotTrack === "1" ? "Yes" : "No";
+
+      // Viewport & behavior
+      form.querySelector('input[name="viewport_size"]').value =
+        `${window.innerWidth}x${window.innerHeight}`;
+
+      // Time spent on page before submitting
+      const timeOnPage = Math.round((Date.now() - pageLoadTime) / 1000);
+      form.querySelector('input[name="time_on_page"]').value =
+        `${timeOnPage} seconds`;
+    }
+
+    async function fetchPublicIP() {
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        return data.ip || "-";
+      } catch (e) {
+        return "-";
+      }
+    }
+
+    // Event listener submit
+    form.addEventListener("submit", async function (e) {
       e.preventDefault();
       e.stopPropagation();
 
-      // Validasi form
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const subject = document.getElementById('subject').value.trim();
-      const message = document.getElementById('message').value.trim();
+      // Validasi basic
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const subject = subjectSelect.value.trim();
+      const message = document.getElementById("message").value.trim();
 
-      // Cek field required
-      if (!name || !email || !message) {
-        showStatus('Please fill in all required fields (Name, Email, Message).', 'error');
+      if (!name || !email || !subject || !message) {
+        showStatus("Please fill in all required fields.", "error");
         return;
       }
 
-      // Validasi email format
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        showStatus('Please enter a valid email address.', 'error');
+        showStatus("Please enter a valid email address.", "error");
+        return;
+      }
+
+      // Prepare final subject value
+      let finalSubject = subject;
+      if (subject === "Other") {
+        const otherValue = otherSubjectInput.value.trim();
+        if (!otherValue) {
+          showStatus("Please specify your subject.", "error");
+          return;
+        }
+        finalSubject = `Other - ${otherValue}`;
+      }
+
+      // Set the final subject value to hidden input BEFORE sending
+      subjectValueInput.value = finalSubject;
+
+      // Jika subject Partnership, kirim ke CRM Leads
+      if (subject === "Partnership & Collaboration") {
+        const company = document.getElementById("company")?.value.trim() || "";
+        try {
+          // Dynamic import agar bisa jalan di browser
+          const { sendToCrmLeads } = await import("./js/crmLeads.js");
+          const crmResult = await sendToCrmLeads({ client: company, message });
+          if (crmResult.error) {
+            showStatus("Gagal kirim ke CRM Leads: " + crmResult.error, "error");
+            setLoading(false);
+            return;
+          }
+        } catch (err) {
+          showStatus("Gagal kirim ke CRM Leads.", "error");
+          setLoading(false);
+          return;
+        }
+      }
+
+      // Honeypot check
+      const honeypot = (
+        form.querySelector('input[name="website"]')?.value || ""
+      ).trim();
+      if (honeypot) {
+        showStatus("Message sent successfully!", "success");
+        form.reset();
         return;
       }
 
       setLoading(true);
 
-      // Kirim email menggunakan EmailJS
-      // Ganti 'service_ffsqvoa' dan 'template_vms7qa9' dengan ID Anda
-      emailjs
-        .sendForm('service_ffsqvoa', 'template_vms7qa9', form)
-        .then(function (response) {
-          console.log('SUCCESS!', response.status, response.text);
-          showStatus("Message sent successfully! We'll get back to you soon.", 'success');
-          form.reset();
-        })
-        .catch(function (error) {
-          console.log('FAILED...', error);
-          showStatus('Failed to send message. Please try again later.', 'error');
-        })
-        .finally(function () {
-          setLoading(false);
-        });
+      try {
+        // reCAPTCHA validation
+        if (typeof grecaptcha !== "undefined") {
+          const recaptchaToken = grecaptcha.getResponse() || "";
+          if (!recaptchaToken) {
+            showStatus("Please complete the reCAPTCHA.", "error");
+            setLoading(false);
+            return;
+          }
+        }
+
+        // Isi metadata SEBELUM kirim
+        populateMetadataFields();
+        form.querySelector('input[name="ip"]').value = await fetchPublicIP();
+
+        await emailjs.sendForm("service_ffsqvoa", "template_vms7qa9", form);
+        showStatus(
+          "Message sent successfully! We'll get back to you soon.",
+          "success",
+        );
+        form.reset();
+        otherSubjectWrapper.classList.add("hidden");
+        otherSubjectInput.required = false;
+        subjectValueInput.value = "";
+
+        if (typeof grecaptcha !== "undefined") {
+          grecaptcha.reset();
+        }
+      } catch (error) {
+        showStatus("Failed to send message. Please try again later.", "error");
+      } finally {
+        setLoading(false);
+      }
     });
 
-    // Tambahkan interaktivitas pada input
-    const inputs = document.querySelectorAll('#contact-form input, #contact-form textarea');
+    // Interaktivitas input
+    const inputs = document.querySelectorAll(
+      "#contact-form input, #contact-form textarea, #contact-form select",
+    );
     inputs.forEach((input) => {
-      // Efek focus
-      input.addEventListener('focus', function () {
-        this.parentElement.style.transform = 'scale(1.01)';
-        this.parentElement.style.transition = 'transform 0.2s ease';
+      input.addEventListener("focus", function () {
+        this.parentElement.style.transform = "scale(1.01)";
+        this.parentElement.style.transition = "transform 0.2s ease";
       });
-
-      // Efek blur
-      input.addEventListener('blur', function () {
-        this.parentElement.style.transform = 'scale(1)';
+      input.addEventListener("blur", function () {
+        this.parentElement.style.transform = "scale(1)";
       });
-
-      // Real-time validation feedback
-      input.addEventListener('input', function () {
-        if (this.hasAttribute('required') && this.value.trim() === '') {
-          this.style.borderColor = '#f56565';
-        } else if (this.type === 'email' && this.value.trim() !== '') {
+      input.addEventListener("input", function () {
+        if (this.hasAttribute("required") && this.value.trim() === "") {
+          this.style.borderColor = "#f56565";
+        } else if (this.type === "email" && this.value.trim() !== "") {
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          this.style.borderColor = emailRegex.test(this.value) ? '#48bb78' : '#f56565';
-        } else if (this.value.trim() !== '') {
-          this.style.borderColor = '#48bb78';
+          this.style.borderColor = emailRegex.test(this.value)
+            ? "#48bb78"
+            : "#f56565";
+        } else if (this.value.trim() !== "") {
+          this.style.borderColor = "#48bb78";
         } else {
-          this.style.borderColor = '#e2e8f0';
+          this.style.borderColor = "#e2e8f0";
         }
       });
     });
-
-    console.log('EmailJS handler loaded successfully');
   });
 
-  // Untuk compatibility dengan view transitions
-  document.addEventListener('astro:page-load', function () {
-    // Re-initialize jika ada view transition
-    if (typeof emailjs !== 'undefined') {
-      emailjs.init('4-iOyCns2viav_IW_');
+  // Untuk compatibility dengan view transitions (Astro)
+  document.addEventListener("astro:page-load", function () {
+    if (typeof emailjs !== "undefined") {
+      emailjs.init("4-iOyCns2viav_IW_");
     }
   });
 </script>
 
 <style>
   .contact {
-    padding: 8rem 1rem;
+    padding: 6rem 1rem;
     background: var(--color-contact);
   }
 
   .contact-container {
-    max-width: 800px;
+    max-width: 600px;
     margin: 0 auto;
   }
 
   .contact-form {
-    margin-top: 4rem;
+    margin-top: 2.5rem;
   }
 
   .form-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
+    gap: 1rem;
+    margin-bottom: 1rem;
   }
 
   .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .form-group label {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
     color: var(--text-color);
     font-weight: 500;
+    font-size: 0.9rem;
   }
 
   .form-group input,
-  .form-group textarea {
+  .form-group textarea,
+  .form-group select {
     width: 100%;
-    padding: 1rem;
+    padding: 0.75rem;
     border: 2px solid #e2e8f0;
-    border-radius: 0.5rem;
-    font-size: 1rem;
+    border-radius: 0.4rem;
+    font-size: 0.95rem;
     color: var(--text-color);
     transition: border-color 0.3s ease;
+    background: (--input-bg);
   }
 
   .form-group input:focus,
-  .form-group textarea:focus {
+  .form-group textarea:focus,
+  .form-group select:focus {
     outline: none;
     border-color: var(--primary);
   }
 
   .form-group textarea {
-    height: 150px;
+    height: 120px;
     resize: vertical;
   }
 
   .status {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    border-radius: 0.5rem;
+    margin-top: 1rem;
+    padding: 0.85rem;
+    border-radius: 0.4rem;
     text-align: center;
     font-weight: 500;
+    font-size: 0.9rem;
     display: none;
   }
 
@@ -250,13 +524,13 @@
 
   .loading {
     display: inline-block;
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     border: 2px solid #ffffff;
     border-radius: 50%;
     border-top-color: transparent;
     animation: spin 1s ease-in-out infinite;
-    margin-right: 8px;
+    margin-right: 6px;
   }
 
   @keyframes spin {
@@ -269,9 +543,21 @@
     .form-grid {
       grid-template-columns: 1fr;
     }
-
     .contact {
-      padding: 4rem 1rem;
+      padding: 3rem 1rem;
     }
+    .contact-container {
+      max-width: 100%;
+    }
+  }
+
+  .captcha-warning {
+    margin-top: 0.5rem;
+    color: #d9534f;
+    font-size: 0.85rem;
+  }
+
+  .hidden {
+    display: none;
   }
 </style>
